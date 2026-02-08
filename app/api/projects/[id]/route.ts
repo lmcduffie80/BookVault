@@ -6,7 +6,7 @@ import { projectSchema } from '@/lib/validations';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,9 +14,10 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const project = await prisma.project.findUnique({
       where: {
-        id: params.id,
+        id,
       },
       include: {
         client: true,
@@ -42,7 +43,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -52,10 +53,11 @@ export async function PUT(
 
     const body = await request.json();
     const validatedData = projectSchema.parse(body);
+    const { id } = await params;
 
     const project = await prisma.project.update({
       where: {
-        id: params.id,
+        id,
       },
       data: {
         ...validatedData,
@@ -88,7 +90,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -96,9 +98,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     await prisma.project.delete({
       where: {
-        id: params.id,
+        id,
       },
     });
 

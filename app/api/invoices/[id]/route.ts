@@ -6,7 +6,7 @@ import { invoiceSchema } from '@/lib/validations';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,9 +14,10 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const invoice = await prisma.invoice.findUnique({
       where: {
-        id: params.id,
+        id,
         userId: (session.user as any).id,
       },
       include: {
@@ -48,7 +49,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -56,18 +57,19 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validatedData = invoiceSchema.parse(body);
     const { items, ...invoiceData } = validatedData;
 
     // Delete existing items and create new ones
     await prisma.invoiceItem.deleteMany({
-      where: { invoiceId: params.id },
+      where: { invoiceId: id },
     });
 
     const invoice = await prisma.invoice.update({
       where: {
-        id: params.id,
+        id,
         userId: (session.user as any).id,
       },
       data: {
@@ -111,7 +113,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -119,9 +121,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     await prisma.invoice.delete({
       where: {
-        id: params.id,
+        id,
         userId: (session.user as any).id,
       },
     });

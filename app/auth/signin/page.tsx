@@ -30,7 +30,7 @@ export default function SignInPage() {
         router.push('/dashboard');
         router.refresh();
       }
-    } catch (error) {
+    } catch (_error) {
       setError('Something went wrong');
     } finally {
       setIsLoading(false);

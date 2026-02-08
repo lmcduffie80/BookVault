@@ -5,6 +5,26 @@ import { StatsCard } from '@/components/dashboard/StatsCard';
 import { Users, FileText, FolderKanban, CheckSquare } from 'lucide-react';
 import { api } from '@/lib/api-client';
 
+interface Client {
+  id: string;
+  status: string;
+}
+
+interface Invoice {
+  id: string;
+  status: string;
+}
+
+interface Project {
+  id: string;
+  status: string;
+}
+
+interface Task {
+  id: string;
+  status: string;
+}
+
 interface DashboardStats {
   totalClients: number;
   activeClients: number;
@@ -33,10 +53,10 @@ export default function DashboardPage() {
     async function loadStats() {
       try {
         const [clientsRes, invoicesRes, projectsRes, tasksRes] = await Promise.all([
-          api.get<{ clients: any[] }>('/clients'),
-          api.get<{ invoices: any[] }>('/invoices'),
-          api.get<{ projects: any[] }>('/projects'),
-          api.get<{ tasks: any[] }>('/tasks'),
+          api.get<{ clients: Client[] }>('/clients'),
+          api.get<{ invoices: Invoice[] }>('/invoices'),
+          api.get<{ projects: Project[] }>('/projects'),
+          api.get<{ tasks: Task[] }>('/tasks'),
         ]);
 
         setStats({

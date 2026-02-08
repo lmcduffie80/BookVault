@@ -36,8 +36,8 @@ export default function NewClientPage() {
       await api.post('/clients', data);
       router.push('/dashboard/clients');
       router.refresh();
-    } catch (error: any) {
-      setError(error.message || 'Failed to create client');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to create client');
     } finally {
       setIsLoading(false);
     }

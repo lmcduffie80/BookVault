@@ -44,7 +44,7 @@ export default function SignUpPage() {
       }
 
       router.push('/auth/signin?registered=true');
-    } catch (error) {
+    } catch (_error) {
       setError('Something went wrong');
     } finally {
       setIsLoading(false);
